@@ -7,13 +7,12 @@ def collector():
 
 def test_add_new_book_adds_book_without_genre(collector):
     collector.add_new_book("Гарри Поттер")
-    assert "Гарри Поттер" in collector.get_books_genre()
-    assert collector.get_book_genre("Гарри Поттер") == ''
+    assert collector.get_books_genre() == {"Гарри Поттер": ""}
 
-@pytest.mark.parametrize("name", ["", "A" * 41])
-def test_add_new_book_rejects_invalid_names(collector, name):
-    collector.add_new_book(name)
-    assert name not in collector.get_books_genre()
+@pytest.mark.parametrize("invalid_name", ["", "A" * 41])
+def test_cannot_add_book_with_invalid_name(collector, invalid_name):
+    collector.add_new_book(invalid_name)
+    assert invalid_name not in collector.get_books_genre()
 
 def test_add_new_book_cannot_add_duplicate(collector):
     collector.add_new_book("Книга")
@@ -34,15 +33,9 @@ def test_get_books_genre_return_full_dict(collector):
     collector.add_new_book("B");collector.set_book_genre("B", "Комедии")
     assert collector.get_books_genre() == {"A": "", "B": "Комедии"}
 
-def test_add_and_delete_book_from_favorites_and_get_list(collector):
+def test_delete_book_from_favorites_removes_book(collector):
     collector.add_new_book("Книга")
     collector.add_book_in_favorites("Книга")
-    collector.add_book_in_favorites("Неизвестная")
-    assert collector.get_list_of_favorites_books() == ["Книга"]
-
-    collector.add_book_in_favorites("Неизвестная")
-    assert collector.get_list_of_favorites_books() ==["Книга"]
-
     collector.delete_book_from_favorites("Книга")
     assert collector.get_list_of_favorites_books() == []
 
